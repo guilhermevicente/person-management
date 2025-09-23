@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/guilhermevicente/person-management/db"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -37,7 +38,8 @@ func getPersons(c echo.Context) error {
 }
 
 func createPerson(c echo.Context) error {
-	return c.String(http.StatusOK, "Create a person")
+	db.InsertPerson()
+	return c.String(http.StatusOK, "Person created")
 }
 
 func getPerson(c echo.Context) error {

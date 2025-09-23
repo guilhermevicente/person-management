@@ -1,0 +1,7 @@
+CREATE TABLE person (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(100) NOT NULL,
+    tax_id VARCHAR(11) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    deleted BOOLEAN DEFAULT FALSE
+);

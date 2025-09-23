@@ -1,0 +1,38 @@
+version: '2.4'
+
+services:
+
+  postgres_person_management:
+    image: postgres:latest
+    container_name: postgres_person_management
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: person-management
+      POSTGRES_USER: person-management
+      POSTGRES_PASSWORD: person-management
+      TZ: UTC
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U person-management"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  flyway:
+    container_name: flyway
+    image: flyway/flyway
+    volumes:
+      - ./migrations/sql/:/flyway/sql/
+    command: -url=jdbc:postgresql://postgres_person_management:5432/person-management -schemas=person_management -user=person-management -password=person-management migrate
+    depends_on:
+      postgres_person_management:
+        condition: service_healthy
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
