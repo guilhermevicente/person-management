@@ -9,10 +9,10 @@ import (
 )
 
 type Person struct {
-	Name    string
-	TaxId   string
-	Email   string
-	Deleted bool
+	Name    string `json:"name"`
+	TaxId   string `json:"tax_id"`
+	Email   string `json:"email"`
+	Deleted bool   `json:"deleted"`
 }
 
 func (Person) TableName() string {
@@ -30,14 +30,8 @@ func Init() *gorm.DB {
 	return db
 }
 
-func InsertPerson() {
+func InsertPerson(person Person) {
 	db := Init()
-	person := Person{
-		Name:    "Gabriel",
-		TaxId:   "87505066099",
-		Email:   "gabriel@teste.com",
-		Deleted: false,
-	}
 	if result := db.Create(&person); result.Error != nil {
 		fmt.Println("Erro on person creation. Error:", result.Error)
 	} else {

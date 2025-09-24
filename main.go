@@ -38,7 +38,12 @@ func getPersons(c echo.Context) error {
 }
 
 func createPerson(c echo.Context) error {
-	db.InsertPerson()
+	person := db.Person{}
+	if err := c.Bind(&person); err != nil {
+		return err
+	}
+	person.Deleted = false
+	db.InsertPerson(person)
 	return c.String(http.StatusOK, "Person created")
 }
 
