@@ -34,7 +34,11 @@ func main() {
 
 // Handler
 func getPersons(c echo.Context) error {
-	return c.String(http.StatusOK, "Get all persons")
+	persons, err := db.GetPersons()
+	if err != nil {
+		return c.String(http.StatusNoContent, "Don't have person")
+	}
+	return c.JSON(http.StatusOK, persons)
 }
 
 func createPerson(c echo.Context) error {

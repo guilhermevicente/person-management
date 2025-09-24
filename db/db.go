@@ -40,3 +40,10 @@ func InsertPerson(person Person) error {
 	fmt.Println("Person created")
 	return nil
 }
+
+func GetPersons() ([]Person, error) {
+	persons := []Person{}
+	db := Init()
+	err := db.Find(&persons).Error
+	return persons, err
+}
