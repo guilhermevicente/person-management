@@ -4,15 +4,17 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 type Person struct {
-	Name    string `json:"name"`
-	TaxId   string `json:"tax_id"`
-	Email   string `json:"email"`
-	Deleted bool   `json:"deleted"`
+	Id      uuid.UUID `json:"id"`
+	Name    string    `json:"name"`
+	TaxId   string    `json:"tax_id"`
+	Email   string    `json:"email"`
+	Deleted bool      `json:"deleted"`
 }
 
 func (Person) TableName() string {

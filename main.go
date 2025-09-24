@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/guilhermevicente/person-management/db"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -46,6 +47,7 @@ func createPerson(c echo.Context) error {
 	if err := c.Bind(&person); err != nil {
 		return err
 	}
+	person.Id = uuid.New()
 	person.Deleted = false
 	if err := db.InsertPerson(person); err != nil {
 		return c.String(http.StatusInternalServerError, "Error to create person")
