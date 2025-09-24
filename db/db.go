@@ -9,6 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
+type PersonHandler struct {
+	DB *gorm.DB
+}
+
 type Person struct {
 	Id      uuid.UUID `json:"id"`
 	Name    string    `json:"name"`
@@ -32,9 +36,12 @@ func Init() *gorm.DB {
 	return db
 }
 
-func InsertPerson(person Person) error {
-	db := Init()
-	if result := db.Create(&person); result.Error != nil {
+func NewPersonHandler(db *gorm.DB) *PersonHandler {
+	return &PersonHandler{DB: db}
+}
+
+func (p *PersonHandler) InsertPerson(person Person) error {
+	if result := p.DB.Create(&person); result.Error != nil {
 		fmt.Println("Erro on person creation. Error:", result.Error)
 		return result.Error
 	}
@@ -43,9 +50,8 @@ func InsertPerson(person Person) error {
 	return nil
 }
 
-func GetPersons() ([]Person, error) {
+func (p *PersonHandler) GetPersons() ([]Person, error) {
 	persons := []Person{}
-	db := Init()
-	err := db.Find(&persons).Error
+	err := p.DB.Find(&persons).Error
 	return persons, err
 }
