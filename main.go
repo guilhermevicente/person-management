@@ -43,7 +43,9 @@ func createPerson(c echo.Context) error {
 		return err
 	}
 	person.Deleted = false
-	db.InsertPerson(person)
+	if err := db.InsertPerson(person); err != nil {
+		return c.String(http.StatusInternalServerError, "Error to create person")
+	}
 	return c.String(http.StatusOK, "Person created")
 }
 

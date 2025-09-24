@@ -30,11 +30,13 @@ func Init() *gorm.DB {
 	return db
 }
 
-func InsertPerson(person Person) {
+func InsertPerson(person Person) error {
 	db := Init()
 	if result := db.Create(&person); result.Error != nil {
 		fmt.Println("Erro on person creation. Error:", result.Error)
-	} else {
-		fmt.Println("Person created. Result: ", result.RowsAffected)
+		return result.Error
 	}
+
+	fmt.Println("Person created")
+	return nil
 }
