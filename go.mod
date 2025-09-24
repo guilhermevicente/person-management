@@ -3,13 +3,13 @@ module github.com/guilhermevicente/person-management
 go 1.24.6
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/labstack/echo/v4 v4.13.4
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.0
 )
 
 require (
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.6.0 // indirect
