@@ -39,5 +39,6 @@ func (api *API) ConfigRoutes() {
 	api.Echo.POST("/persons", api.createPerson)
 	api.Echo.GET("/persons/:id", api.getPerson)
 	api.Echo.PUT("/persons/:id", api.updatePerson)
+	api.Echo.PATCH("/persons/:id", api.updatePartOfPerson)
 	api.Echo.DELETE("/persons/:id", api.deletePerson)
 }
