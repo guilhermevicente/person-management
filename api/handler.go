@@ -17,7 +17,8 @@ func (api *API) getPersons(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusNoContent, "Don't have person")
 	}
-	return c.JSON(http.StatusOK, persons)
+	listOfPersons := map[string][]schemas.PersonResponse{"persons": schemas.NewResponse(persons)}
+	return c.JSON(http.StatusOK, listOfPersons)
 }
 
 func (api *API) createPerson(c echo.Context) error {
