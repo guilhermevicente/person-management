@@ -53,13 +53,13 @@ func (p *PersonHandler) InsertPerson(person Person) error {
 
 func (p *PersonHandler) GetPersons() ([]Person, error) {
 	persons := []Person{}
-	err := p.DB.Find(&persons).Error
+	err := p.DB.Where("deleted = ?", false).Find(&persons).Where("deleted = ?", false).Error
 	return persons, err
 }
 
 func (p *PersonHandler) GetPerson(uuid uuid.UUID) (Person, error) {
 	var person Person
-	err := p.DB.First(&person, uuid)
+	err := p.DB.Where("deleted = ?", false).First(&person, uuid)
 	return person, err.Error
 }
 

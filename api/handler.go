@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -111,6 +110,24 @@ func mergePerson(patchPerson, person db.Person) db.Person {
 }
 
 func (api *API) deletePerson(c echo.Context) error {
-	personId := c.Param("id")
-	return c.String(http.StatusOK, fmt.Sprintf("Delete person of id %s", personId))
+	personId, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		return c.String(http.StatusBadRequest, "invalid id for person search")
+	}
+
+	person, err := api.DB.GetPerson(personId)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return c.String(http.StatusNoContent, "Person not found")
+	}
+
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "Failed to get Person")
+	}
+
+	person.Deleted = true
+	if err := api.DB.UpdatePerson(person); err != nil {
+		return c.String(http.StatusInternalServerError, "Error to delete person")
+	}
+	return c.String(http.StatusOK, "Person deleted")
 }
