@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/guilhermevicente/person-management/schemas"
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
@@ -20,9 +21,19 @@ func (api *API) getPersons(c echo.Context) error {
 }
 
 func (api *API) createPerson(c echo.Context) error {
-	person := schemas.Person{}
-	if err := c.Bind(&person); err != nil {
+	personReq := PersonRequest{}
+	if err := c.Bind(&personReq); err != nil {
 		return err
+	}
+	erros := personReq.Validate()
+	if len(erros) > 0 {
+		log.Error().Msg("error validating person")
+		return c.JSON(http.StatusBadRequest, erros)
+	}
+	person := schemas.Person{
+		Name:  personReq.Name,
+		Email: personReq.Email,
+		TaxId: personReq.TaxId,
 	}
 	person.Id = uuid.New()
 	person.Deleted = false
