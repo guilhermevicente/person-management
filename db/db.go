@@ -56,3 +56,9 @@ func (p *PersonHandler) GetPersons() ([]Person, error) {
 	err := p.DB.Find(&persons).Error
 	return persons, err
 }
+
+func (p *PersonHandler) GetPerson(uuid uuid.UUID) (Person, error) {
+	var person Person
+	err := p.DB.First(&person, uuid)
+	return person, err.Error
+}
