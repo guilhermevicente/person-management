@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/google/uuid"
+	"github.com/guilhermevicente/person-management/schemas"
 	"github.com/rs/zerolog/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -11,25 +12,13 @@ type PersonHandler struct {
 	DB *gorm.DB
 }
 
-type Person struct {
-	Id      uuid.UUID `json:"id"`
-	Name    string    `json:"name"`
-	TaxId   string    `json:"tax_id"`
-	Email   string    `json:"email"`
-	Deleted bool      `json:"deleted"`
-}
-
-func (Person) TableName() string {
-	return "person_management.person"
-}
-
 func Init() *gorm.DB {
 	dsn := "host=localhost user=person-management password=person-management dbname=person-management port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal().Err(err).Msgf("Failed to initialize DB connection")
 	}
-	db.AutoMigrate(&Person{})
+	db.AutoMigrate(&schemas.Person{})
 	return db
 }
 
@@ -37,7 +26,7 @@ func NewPersonHandler(db *gorm.DB) *PersonHandler {
 	return &PersonHandler{DB: db}
 }
 
-func (p *PersonHandler) InsertPerson(person Person) error {
+func (p *PersonHandler) InsertPerson(person schemas.Person) error {
 	if result := p.DB.Create(&person); result.Error != nil {
 		if len(person.TaxId) > 5 {
 			log.Fatal().Err(result.Error).Msgf("Failed to create person: %s", person.TaxId[:len(person.TaxId)-6])
@@ -51,19 +40,19 @@ func (p *PersonHandler) InsertPerson(person Person) error {
 	return nil
 }
 
-func (p *PersonHandler) GetPersons() ([]Person, error) {
-	persons := []Person{}
+func (p *PersonHandler) GetPersons() ([]schemas.Person, error) {
+	persons := []schemas.Person{}
 	err := p.DB.Where("deleted = ?", false).Find(&persons).Where("deleted = ?", false).Error
 	return persons, err
 }
 
-func (p *PersonHandler) GetPerson(uuid uuid.UUID) (Person, error) {
-	var person Person
+func (p *PersonHandler) GetPerson(uuid uuid.UUID) (schemas.Person, error) {
+	var person schemas.Person
 	err := p.DB.Where("deleted = ?", false).First(&person, uuid)
 	return person, err.Error
 }
 
-func (p *PersonHandler) UpdatePerson(person Person) error {
+func (p *PersonHandler) UpdatePerson(person schemas.Person) error {
 	if result := p.DB.Save(&person); result.Error != nil {
 		if len(person.TaxId) > 5 {
 			log.Fatal().Err(result.Error).Msgf("Failed to update person: %s", person.TaxId[:len(person.TaxId)-6])

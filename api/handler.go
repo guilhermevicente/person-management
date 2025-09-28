@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/guilhermevicente/person-management/db"
+	"github.com/guilhermevicente/person-management/schemas"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -20,7 +20,7 @@ func (api *API) getPersons(c echo.Context) error {
 }
 
 func (api *API) createPerson(c echo.Context) error {
-	person := db.Person{}
+	person := schemas.Person{}
 	if err := c.Bind(&person); err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func (api *API) updatePerson(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, "invalid id for person update")
 	}
-	person := db.Person{}
+	person := schemas.Person{}
 	if err := c.Bind(&person); err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func (api *API) updatePartOfPerson(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "invalid id for person search")
 	}
 
-	patchPerson := db.Person{}
+	patchPerson := schemas.Person{}
 	if err := c.Bind(&patchPerson); err != nil {
 		return err
 	}
@@ -96,7 +96,7 @@ func (api *API) updatePartOfPerson(c echo.Context) error {
 	return c.String(http.StatusOK, "Person updated")
 }
 
-func mergePerson(patchPerson, person db.Person) db.Person {
+func mergePerson(patchPerson, person schemas.Person) schemas.Person {
 	if patchPerson.Email != "" {
 		person.Email = patchPerson.Email
 	}
