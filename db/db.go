@@ -62,3 +62,17 @@ func (p *PersonHandler) GetPerson(uuid uuid.UUID) (Person, error) {
 	err := p.DB.First(&person, uuid)
 	return person, err.Error
 }
+
+func (p *PersonHandler) UpdatePerson(person Person) error {
+	if result := p.DB.Save(&person); result.Error != nil {
+		if len(person.TaxId) > 5 {
+			log.Fatal().Err(result.Error).Msgf("Failed to update person: %s", person.TaxId[:len(person.TaxId)-6])
+		} else {
+			log.Fatal().Err(result.Error).Msgf("Failed to update person")
+		}
+		return result.Error
+	}
+
+	log.Info().Msg("Person updated")
+	return nil
+}

@@ -53,14 +53,19 @@ func (api *API) getPerson(c echo.Context) error {
 }
 
 func (api *API) updatePerson(c echo.Context) error {
+	personId, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		return c.String(http.StatusBadRequest, "invalid id for person update")
+	}
 	person := db.Person{}
 	if err := c.Bind(&person); err != nil {
 		return err
 	}
-	if err := api.DB.InsertPerson(person); err != nil {
-		return c.String(http.StatusInternalServerError, "Error to create person")
+	person.Id = personId
+	if err := api.DB.UpdatePerson(person); err != nil {
+		return c.String(http.StatusInternalServerError, "Error to update person")
 	}
-	return c.String(http.StatusOK, "Person created")
+	return c.String(http.StatusOK, "Person updated")
 }
 
 func (api *API) deletePerson(c echo.Context) error {
