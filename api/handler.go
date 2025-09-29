@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/guilhermevicente/person-management/schemas"
@@ -13,10 +14,19 @@ import (
 
 // Handler
 func (api *API) getPersons(c echo.Context) error {
-	persons, err := api.DB.GetPersons()
+	deleted := c.QueryParam("deleted")
+
+	del, err := strconv.ParseBool(deleted)
+	if err != nil {
+		log.Warn().Msg("error to parse deleted bool param, set false by default")
+		del = false
+	}
+
+	persons, err := api.DB.GetPersons(del)
 	if err != nil {
 		return c.String(http.StatusNoContent, "Don't have person")
 	}
+
 	listOfPersons := map[string][]schemas.PersonResponse{"persons": schemas.NewResponse(persons)}
 	return c.JSON(http.StatusOK, listOfPersons)
 }

@@ -40,9 +40,9 @@ func (p *PersonHandler) InsertPerson(person schemas.Person) error {
 	return nil
 }
 
-func (p *PersonHandler) GetPersons() ([]schemas.Person, error) {
+func (p *PersonHandler) GetPersons(deleted bool) ([]schemas.Person, error) {
 	persons := []schemas.Person{}
-	err := p.DB.Where("deleted = ?", false).Find(&persons).Where("deleted = ?", false).Error
+	err := p.DB.Where("deleted = ?", deleted).Find(&persons).Where("deleted = ?", false).Error
 	return persons, err
 }
 
