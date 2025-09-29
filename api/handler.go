@@ -13,6 +13,17 @@ import (
 )
 
 // Handler
+
+// getpersons godoc
+//
+// @Summary Get Persons
+// @Description Get Persons details list
+// @Tags persons
+// @Accept json
+// @Produce json
+// @Success 200 {list} schemas.PersonResponse
+// @Failure 500
+// @Router /persons [get]
 func (api *API) getPersons(c echo.Context) error {
 	deleted := c.QueryParam("deleted")
 

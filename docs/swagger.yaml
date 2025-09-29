@@ -1,0 +1,21 @@
+info:
+  contact: {}
+paths:
+  /persons:
+    get:
+      consumes:
+      - application/json
+      description: Get Persons details list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: list
+        "500":
+          description: Internal Server Error
+      summary: Get Persons
+      tags:
+      - persons
+swagger: "2.0"
